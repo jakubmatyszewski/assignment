@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from typing import List
+from typing import List, Union
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
@@ -74,6 +74,23 @@ def init_empty_user_db(db: Session) -> None:
     )
 
     create_user(user_data, db)
+
+
+def verify_new_user(user_data: schemas.User, db: Session) -> Union[dict, None]:
+    username_used = (
+        db.query(models.UserORM).filter(models.UserORM.username == user_data.username).first()
+    )
+    if username_used:
+        return {"msg": "Username already in use."}
+
+    pseudonym_used = (
+        db.query(models.UserORM).filter(models.UserORM.pseudonym == user_data.pseudonym).first()
+    )
+    if pseudonym_used:
+        return {"msg": "Pseudonym already in use."}
+
+    if len(user_data.password) < 6:
+        return {"msg": "Please use password that is at least 6 characters long."}
 
 
 def get_user_details(username: str, db: Session) -> schemas.UserExtended:

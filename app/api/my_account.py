@@ -2,9 +2,15 @@ from fastapi import APIRouter, Depends
 from app.db import schemas
 from app.db.database import get_user_details, get_db
 from app.utils.login import login_manager
+from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
 router = APIRouter()
+
+
+@router.get("/", include_in_schema=False)
+async def redirect_to_docs():
+    return RedirectResponse("/docs#")
 
 
 @router.get("/me", response_model=schemas.UserExtended)

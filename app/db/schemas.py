@@ -5,7 +5,7 @@ class User(BaseModel):
     username: str
     pseudonym: str
     password: str
-    enabled: bool
+    enabled: bool = True
 
 class UserInDB(BaseModel):
     username: str
