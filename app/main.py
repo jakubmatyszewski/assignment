@@ -24,8 +24,7 @@ session = next(database.get_db())
 if session.query(models.UserORM).count() < 1:
     logger.warning("No users found in database. Initializing default user table")
     database.init_empty_user_db(session)
-else:
-    RESTIRCTED_USERS = session.query(models.UserORM.username).filter(models.UserORM.enabled == False).all()
+restricted_users = session.query(models.UserORM.username).filter(models.UserORM.enabled == False).all()
 
 from app.api import api_router
 logger.info('Loading routers')
